@@ -9,7 +9,7 @@ public class Main_2448 {
 
 	public static void main(String[] args) {
 		Scanner sc = new Scanner(System.in);
-		N = sc.nextInt();
+		N = sc.nextInt(); 
 		board = new int[N][2*N-1];
 		sb = new StringBuilder();
 		
