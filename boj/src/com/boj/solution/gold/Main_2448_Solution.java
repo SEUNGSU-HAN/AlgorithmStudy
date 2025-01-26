@@ -2,6 +2,8 @@ package com.boj.solution.gold;
 
 import java.util.Scanner;
 
+//강사님 코드도 오류 발생 (int 배열 써서 그런듯)
+//로직은 맞는 로직
 public class Main_2448_Solution {
 	static int n;
 	static int[][] board;
