@@ -9,7 +9,6 @@ public class Main_10993 {
 	static int N;
 	static char[][] board;
 	
-	출력 형식 오류... (아마 별 오른쪽 공백때문에 그런듯..?)
 	public static void main(String[] args) throws Exception{
 		//입력
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -32,8 +31,17 @@ public class Main_10993 {
 		triangle((N%2 == 1) ? 0 : rSize-1, cSize/2, rSize, cSize, N);
 		
 		//출력
-		for (int j = 0; j < rSize; j++) {
-			sb.append(board[j]).append('\n');
+		for (int i = 0; i < rSize; i++) {
+			if(N%2 == 1) {
+				for (int j = 0; j <= cSize/2+i; j++) {
+					sb.append(board[i][j]);
+				}
+			}else {
+				for (int j = 0; j < cSize-i; j++) {
+					sb.append(board[i][j]);
+				}
+			}
+			sb.append(" " + "\n");
 		}
 		System.out.println(sb.toString());
 	}
@@ -77,39 +85,6 @@ public class Main_10993 {
 			triangle(r+(rs-2), c, rs/2, cs/2-1, n-1);
 		}
 		
-		
-		
-//		if(n%2 == 1) {
-//			for (int i = r; i < r+(rs-1); i++) {
-//				if(i != r+(rs-1)) {
-//					//별 + 공백
-//					for (int j = 0; j < 2*i+1; j++) {
-//						if(j == 0) board[r+i][c-j/2] = '*';
-//						else if(j == 2*i) board[r+i][c+j/2] = '*';
-//					}
-//				}else {
-//					//all 별
-//					for (int j = c-cs/2; j <= c+cs/2; j++) {
-//						board[i][j] = '*';
-//					}
-//				}
-//			}
-//		}else {
-//			for (int i = r; i >= r-(rs-1); i--) {
-//				if(i != r-(rs-1)) {
-//					//별 + 공백
-//					for (int j = 0; j < 2*i+1; j++) {
-//						if(j == 0) board[r-i][c-j/2] = '*';
-//						else if(j == 2*i) board[r-i][c+j/2] = '*';
-//					}
-//				}else {
-//					//all 별
-//					for (int j = c-cs/2; j <= c+cs/2; j++) {
-//						board[i][j] = '*';
-//					}
-//				}
-//			}
-//		}
 	}
 
 }
