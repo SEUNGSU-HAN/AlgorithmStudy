@@ -55,6 +55,7 @@ public class Main_15953 {
 				prize[i] += 320000;
 			}
 			
+			
 			sb.append(prize[i] + "\n");
 		}
 		
