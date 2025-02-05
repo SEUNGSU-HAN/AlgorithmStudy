@@ -29,7 +29,8 @@ public class Main_2870 {
 		//BigInteger 사용해보자.
 		for (int i = 0; i < N; i++) {
 			for (int j = 0; j < str[i].length; j++) {
-				if(48 <= str[i][j] && str[i][j] <= 57) { //숫자일 경우
+//				if(48 <= str[i][j] && str[i][j] <= 57) { //숫자일 경우
+				if(Character.isDigit(str[i][j])) { //얘가 더 속도 빠름
 					sb.append(String.valueOf(str[i][j]));
 				}else {
 					if(sb.length() != 0) {
