@@ -18,7 +18,7 @@ public class Main_14502 {
 	static ArrayList<Coord> cds; //안전구역 모음
 	static ArrayList<Coord> virus; //바이러스 모음
 	static int[] dr = {-1, 0, 1, 0};
-	static int[] dc = {0, 1, 0, -1};
+	static int[] dc = {0, 1, 0, -1}; 
 
 	public static void main(String[] args) throws Exception{
 		/* 입력 */
