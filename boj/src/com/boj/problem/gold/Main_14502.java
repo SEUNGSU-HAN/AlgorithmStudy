@@ -10,13 +10,13 @@ import java.util.StringTokenizer;
 //연구소
 public class Main_14502 {
 	static int N, M, W=3;
-	static int safe = 0;
+	static int safe = 0; //안전구역
 	static int[][] board;
 	static int[][] testBoard;
 	static boolean[][] visited;
-	static Coord[] wall; //벽 위치 (index = 행, 열 = 값)
+	static Coord[] wall; //벽 위치
 	static ArrayList<Coord> cds; //안전구역 모음
-	static ArrayList<Coord> virus;
+	static ArrayList<Coord> virus; //바이러스 모음
 	static int[] dr = {-1, 0, 1, 0};
 	static int[] dc = {0, 1, 0, -1};
 
