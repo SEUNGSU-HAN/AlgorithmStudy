@@ -8,6 +8,7 @@ public class Main_10597 {
 	static String P;
 	static int N;
 	static boolean[] visited;
+	static boolean isprint;
 	static ArrayList<Integer> list;
 
 	public static void main(String[] args) throws Exception{
@@ -25,37 +26,45 @@ public class Main_10597 {
 		list = new ArrayList<>();
 		
 		/* 로직 */
-		findPerm(0, P.toCharArray());
-		
+		findPerm(0);
 		
 		/* 출력 */
 	}
 
-	
-	
 
-	private static void findPerm(int cnt, char[] cl) {
-		if(cnt == P.length()-1) {
-			StringBuilder sb = new StringBuilder();
-			for (int i = 0; i < N; i++) {
-				sb.append(list.get(i)).append(" ");
+	private static void findPerm(int cnt) {
+		if(isprint) return;
+		if(cnt == P.length()) {
+			for (int i = 0; i < list.size(); i++) {
+				System.out.print(list.get(i) + " ");
 			}
-			System.out.print(sb);
+			isprint = true;
 			return;
 		}
 		String str = "";
-		for (int i = cnt; i <= cnt+1; i++) {
-			str += String.valueOf(cl[i]);
-			int num = Integer.parseInt(str);
-			if(num > N || visited[num]) continue;
-			visited[num] = true;
-			list.add(num);
-			if(i+1 < P.length()-1) findPerm(i+1, cl);
-			visited[num] = false;
+		//1.단 1개
+		str = P.substring(cnt, cnt+1);
+		int n = Integer.parseInt(str);
+		if(!visited[n]) {
+			visited[n] = true;
+			list.add(n);
+			findPerm(cnt+1);
 			list.remove(list.size()-1);
+			visited[n] = false;
+		}
+		
+		//2. 두 자리 자를 경우
+		if(cnt < P.length()-1) {
+			str = P.substring(cnt, cnt+2);
+			n = Integer.parseInt(str);
+			if(n > N || visited[n]) return;
+			visited[n] = true;
+			list.add(n);
+			findPerm(cnt+2);
+			list.remove(list.size()-1);
+			visited[n] = false;
 		}
 	}
-
 
 
 
