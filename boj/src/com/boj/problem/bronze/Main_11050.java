@@ -1,3 +1,4 @@
+package com.boj.problem.bronze;
 import java.util.Scanner;
 
 public class Main_11050 {
