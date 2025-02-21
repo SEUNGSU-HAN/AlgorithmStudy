@@ -28,6 +28,7 @@ public class Main_1978 {
 			prime[i] = true;
 		}
 		
+		//에라토스테네스의 체
 		for (int i = 2; i <= (int)Math.sqrt(max); i++) {
 			for (int j = i+1; j <= max; j++) {
 				if(!prime[j]) continue;
