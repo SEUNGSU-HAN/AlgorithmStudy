@@ -1,9 +1,11 @@
+package com.boj.problem.silver;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+//패션왕 신해빈
 public class Main_9375 {
 	static int T, N;
 	static Map<String, ArrayList<String>> clothes;
