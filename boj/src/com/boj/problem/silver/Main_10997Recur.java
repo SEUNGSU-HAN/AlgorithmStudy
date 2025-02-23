@@ -1,3 +1,4 @@
+package com.boj.problem.silver;
 import java.util.*;
 
 public class Main_10997Recur {
@@ -19,7 +20,8 @@ public class Main_10997Recur {
 		
 		/* 로직 */
 		//시작점
-		star(2, C-2, R, C, N);
+		if(N == 1) board[0][0] = true;
+		else star(2, C-2, R, C, N);
 			
 		
 		/* 출력 */
@@ -27,7 +29,10 @@ public class Main_10997Recur {
 		for (int i = 0; i < R; i++) {
 			String spaceBuffer = "";
 			for (int j = 0; j < C; j++) {
-				if(board[i][j]) sb.append(spaceBuffer).append("*");
+				if(board[i][j]) {
+					sb.append(spaceBuffer).append("*");
+					spaceBuffer="";
+				}
 				else spaceBuffer+=" ";
 			}
 			sb.append("\n");
@@ -35,7 +40,9 @@ public class Main_10997Recur {
 		System.out.print(sb);
 	}
 
-	private static void star(int y, int x, int r, int c, int cnt) {
+	private static void star(int sy, int sx, int r, int c, int cnt) {
+		int y = sy, x = sx;
+		
 		if(cnt == 1) {
 			board[y][x] = true;
 			return;
@@ -43,30 +50,30 @@ public class Main_10997Recur {
 		
 		board[y][x] = true;
 		board[y][++x] = true;
-		for (int i = 0; i < 4; i++) {
-			//하
-			for (int j = 0; j < r-3; j++) {
-				board[++y][x] = true;
-			}
-			//좌
-			for (int j = 0; j < c-1; j++) {
-				board[y][--x] = true;
-			}
-			//상
-			for (int j = 0; j < r-1; j++) {
-				board[--y][x] = true;
-			}
-			//우
-			for (int j = 0; j < c-1; j++) {
-				board[y][x++] = true;
-			}
+
+		//하
+		for (int j = 0; j < r-3; j++) {
+			board[++y][x] = true;
+		}
+		//좌
+		for (int j = 0; j < c-1; j++) {
+			board[y][--x] = true;
+		}
+		//상
+		for (int j = 0; j < r-1; j++) {
+			board[--y][x] = true;
+		}
+		//우
+		for (int j = 0; j < c-1; j++) {
+			board[y][++x] = true;
 		}
 		
+		
 		if(cnt == 2) {
-			board[y][x-1] = true;
-			board[y+1][x-1] = true;
-			star(y+2, x-1, 1, 1, cnt-1);
-		}else star(y+2, x-2, r-4, c-4, cnt-1);
+			board[sy][sx-1] = true;
+			board[sy+1][sx-1] = true;
+			star(sy+2, sx-1, 1, 1, cnt-1);
+		}else star(sy+2, sx-2, r-4, c-4, cnt-1);
 		
 	}
 
