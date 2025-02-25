@@ -1,19 +1,16 @@
 package com.boj.problem.silver;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
-import java.util.ArrayDeque;
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Set;
 import java.util.StringTokenizer;
-import java.util.TreeSet;
 
 //N과 M()
 //조합 (중복 x)
 public class Main_15663 {
 	static int N, M;
-	static Set<Integer> ts;
-	static int[] p;
-	static ArrayDeque<Integer>[] nums;
+	static int[] p, nums;
+	static ArrayList<Integer>[] result;
 	static boolean[] visited;
 	
 	public static void main(String[] args) throws Exception{
@@ -26,42 +23,48 @@ public class Main_15663 {
 		/* 초기화 */
 		p = new int[N];
 		st = new StringTokenizer(br.readLine());
+		int max = 0;
 		for (int i = 0; i < N; i++) {
 			p[i] = Integer.parseInt(st.nextToken());
+			max = Math.max(max, p[i]);
 		}
 		visited = new boolean[N];
-		ts = new TreeSet<>((o1, o2) -> o1 - o2);
-		nums = new ArrayDeque[M];
-		for (int i = 0; i < M; i++) {
-			nums[i] = new ArrayDeque<>();
+		nums = new int[M];
+		result = new ArrayList[max+1];
+		for (int i = 0; i <= max; i++) {
+			result[i] = new ArrayList<>();
 		}
 		
 		/* 로직 */
 		Arrays.sort(p);
-		StringBuilder sb = new StringBuilder();
-		combi(0, sb);
-		아직 하는 중..
+		perm(0);
+		하는중...
 		
 		/* 출력 */
+		StringBuilder sb = new StringBuilder();
+		for (int i = 0; i <= max; i++) {
+			if(result[i].size() != 0) {
+				for (int j = 0; j < result[i].size(); j++) {
+					sb.append(i).append(" ").append(result[i].get(j)).append("\n");
+				}
+			}
+		}
 		System.out.print(sb);
 	}
 
-	private static void combi(int cnt, StringBuilder sb) {
+	private static void perm(int cnt) {
 		if(cnt == M) {
-			for (int i = 0; i < M; i++) {
-				sb.append(nums[i].peekFirst()).append(" ");
+			for (int i = 1; i < M; i++) {
+				if(!result[nums[0]].contains(nums[i])) result[nums[0]].add(nums[i]);				
 			}
-			sb.append("\n");
 			return;
 		}
 		for (int i = 0; i < p.length; i++) {
 			if(visited[i]) continue;
-			if(!nums[cnt].contains(p[i])) {
-				nums[cnt].addLast(p[i]);
-				visited[i] = true;
-			}
-			combi(cnt+1, sb);
-			nums[cnt].poll();
+			visited[i] = true;
+			nums[cnt] = p[i];
+			perm(cnt+1);
+			nums[cnt] = 0;
 			visited[i] = false;
 		}
 	}
