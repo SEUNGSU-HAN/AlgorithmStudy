@@ -1,3 +1,4 @@
+package com.boj.problem.bronze;
 import java.io.*;
 
 //팰린드롬수
