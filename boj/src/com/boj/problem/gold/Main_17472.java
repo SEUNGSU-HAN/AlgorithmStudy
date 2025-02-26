@@ -1,3 +1,4 @@
+package com.boj.problem.gold;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.ArrayDeque;
@@ -6,6 +7,7 @@ import java.util.PriorityQueue;
 import java.util.Queue;
 import java.util.StringTokenizer;
 
+//다리만들기2 (FF+bfs+MST)
 public class Main_17472 {
 	static int N, M;
 	static int[][] board;
@@ -14,6 +16,7 @@ public class Main_17472 {
 	static int[] dc = {0, 1, 0, -1};
 	static int landCount; //섬의 개수
 	static ArrayList<int[]>[] land; //섬들 모음
+	static ArrayList<ArrayList<Integer>> conn; //각 섬들의 다리 연결 정보
 	
 	static class Edge implements Comparable<Edge>{
 		int s, e, w;
@@ -42,8 +45,7 @@ public class Main_17472 {
 	
 	static PriorityQueue<Edge> points; //최종 건설된 다리의 정보
 	static int[] p, r;
-	static boolean[] isConn;
-	static int min;
+	static int min = -1;
 
 	public static void main(String[] args) throws Exception{
 		/* 입력 */
@@ -71,6 +73,11 @@ public class Main_17472 {
 		/* 로직 */
 		//1. 단 FF 돌려 (섬을 찾아)
 		ff();
+		conn = new ArrayList<>();
+		for (int i = 0; i <= landCount; i++) {
+			conn.add(new ArrayList<>());
+		}
+		
 		//2. 제 다리를 연결해
 		// 각 섬에서 연결할 수 있는 모든 다리를 일단 연결해서 points에 정보 저장
 		// 이후 MST를 거쳐서 최소 경로를 찾으면 됨
@@ -79,11 +86,13 @@ public class Main_17472 {
 			visited = new boolean[N][M];
 			createBridge(i);
 		}
-		isConn = new boolean[landCount+1];
+		
+		
 		//3. MST를 돌려
-		if(points.size() == 0) min = -1;
-		else {
+		//+)모든 섬이 연결되어 있는지 확인해줘야함
+		if(points.size() != 0 && isConn(1)) {
 			//다리가 1개 이상일 때만 돌려
+			min = 0;
 			init();
 			int cnt = 0;
 			while(cnt != landCount-1) {
@@ -93,17 +102,33 @@ public class Main_17472 {
 					min += edge.w;
 				}
 			}
-			
-			//모든 섬이 연결 되었는지 여부 확인
-			for (int i = 1; i <= landCount; i++) {
-				if(!isConn[i]) min = -1;
-			}
 		}
 		
 		
 		/* 출력 */
-		System.out.println(landCount);
 		System.out.print(min);
+	}
+
+
+	//모든 섬의 연결 여부를 확인
+	private static boolean isConn(int start) {
+		Queue<Integer> q = new ArrayDeque<>();
+		q.offer(start);
+		int flag = 1<<start;
+		int count = 1;
+		while(!q.isEmpty()) {
+			int cur = q.poll();
+			for (int i = 0; i < conn.get(cur).size(); i++) {
+				int next = conn.get(cur).get(i);
+				if((flag & 1<<next) == 0) {
+					q.offer(next);
+					flag |= 1<<next;
+					count++;
+				}
+			}
+		}
+		//방문한 섬의 개수가 총 섬의 개수와 맞지 않다면 연결되있지 않다!
+		return count == landCount ? true : false;
 	}
 
 	static boolean union(int x, int y) {
@@ -155,8 +180,10 @@ public class Main_17472 {
 				}
 				//건설된 다리의 길이가 2이상이면 건설 성공!(아니면 빠꾸)
 				if(bridgeCount >= 2 && e != 0) {
-					//시작점, 목적지, 가중치를 모두 얻었기에 우선순위 큐에 엣지 추가
 					Edge edge = new Edge(s, e, bridgeCount);
+					//섬들간 다리 연결 정보 저장 (양방향)
+					if(!conn.get(s).contains(e)) conn.get(s).add(e);
+					//시작점, 목적지, 가중치를 모두 얻었기에 우선순위 큐에 엣지 추가
 					if(!points.contains(edge)) points.offer(edge);
 				}
 			}
