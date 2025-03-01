@@ -1,3 +1,4 @@
+package com.boj.problem.silver;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.Arrays;
