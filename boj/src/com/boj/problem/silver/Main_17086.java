@@ -1,3 +1,4 @@
+package com.boj.problem.silver;
 import java.io.*;
 import java.util.*;
 
@@ -9,7 +10,7 @@ public class Main_17086 {
 	static int[] dr = {-1, -1, 0, 1, 1, 1, 0, -1};
 	static int[] dc = {0, 1, 1, 1, 0, -1, -1, -1};
 	static boolean[][] visited;
-	static int maxD;
+	static int maxD = 0;
 	
 	public static void main(String[] args) throws Exception{
 		/* 입력 */
@@ -47,16 +48,20 @@ public class Main_17086 {
 		Queue<int[]> q = new ArrayDeque<>();
 		q.offer(start);
 		visited[start[0]][start[1]] = true;
+		int distance = Integer.MAX_VALUE;
 		while(!q.isEmpty()) {
 			int[] cur = q.poll();
-			for (int i = 0; i < 4; i++) {
+			for (int i = 0; i < 8; i++) {
 				int nr = cur[0]+dr[i];
 				int nc = cur[1]+dc[i];
-				if(check(nr, nc)) {
-					
+				if(check(nr, nc) && !visited[nr][nc]) {
+					if(board[nr][nc] == 1) distance = Math.min(distance,  cur[2]+1);
+					visited[nr][nc] = true;
+					q.offer(new int[] {nr, nc, cur[2]+1});
 				}
 			}
 		}
+		maxD = Math.max(maxD, distance);
 	}
 
 	static boolean check(int nr, int nc) {
