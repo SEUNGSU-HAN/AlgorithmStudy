@@ -2,8 +2,6 @@ package com.boj.problem.gold;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
-import java.util.ArrayDeque;
-import java.util.Queue;
 import java.util.StringTokenizer;
 
 public class Main_3109 {
@@ -33,28 +31,34 @@ public class Main_3109 {
 		
 		//로직
 		for (int i = 0; i < R; i++) {
-			dfs(0, new int[] {i, 0});
-		}
-		
-		for (int i = 0; i < R; i++) {
-			if(board[i][C-1] == 'a') pipe++;
+			if(board[i][0] == '.')
+				if(dfs(0, new int[] {i, 0}, false)) pipe++;
 		}
 		
 		//출력
-		System.out.println(pipe);
+		System.out.print(pipe);
 		
 	}
 
-	static void dfs(int cnt, int[] cur) {
-		if(cnt == C) {
-			return;
+	static boolean dfs(int cnt, int[] cur, boolean isConn) {
+		if(isConn) return true;
+		
+		if(cnt == C-1) {
+			isConn = true;
+			return true;
 		}
 		for (int i = 0; i < 3; i++) {
 			int nr = cur[0]+dr[i];
 			int nc = cur[1]+1;
-			if(check(nr, nc) && board[nr][nc] == '.' )
+			if(check(nr, nc) && board[nr][nc] == '.' && !isConn) {
+				board[nr][nc] = 'o';
+				isConn = dfs(cnt+1, new int[] {nr, nc}, isConn);
+			}
 		}
+				
+		return isConn;
 	}
+
 
 	static boolean check(int nr, int nc) {
 		return (0 <= nr && nr < R) && (0 <= nc && nc < C);
