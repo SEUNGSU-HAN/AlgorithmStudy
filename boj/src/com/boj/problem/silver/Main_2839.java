@@ -1,3 +1,4 @@
+package com.boj.problem.silver;
 import java.util.*;
 
 public class Main_2839 {
