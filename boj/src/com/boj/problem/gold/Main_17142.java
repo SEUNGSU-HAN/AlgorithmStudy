@@ -1,3 +1,4 @@
+package com.boj.problem.gold;
 import java.io.*;
 import java.util.*;
 
@@ -40,7 +41,6 @@ public class Main_17142 {
 
 	static void combi(int cnt, int start, int flag) {
 		if(cnt == M) {
-			System.out.println(Arrays.toString(choice));
 			int area = 0; //바이러스가 아닌 영역 개수
 			visited = new boolean[N][N]; //visited로 방문 처리
 			int[][] temp = new int[N][N]; //깊은 복사용
@@ -64,39 +64,33 @@ public class Main_17142 {
 			}
 			
 			//바이러스퍼트려~ (bfs)
-			int t = -1; //board는 꽉찼지만 큐를 털기 위해 마지막에 한번 더 들어가기에 -1 스타트
-			while(!q.isEmpty()) {
-				print(temp);
-				int n = q.size();
-				while(n-- > 0) { //같은 depth의 애들만 돌리기
-					int[] cur = q.poll();
-					for (int i = 0; i < 4; i++) {
-						int nr = cur[0]+dr[i];
-						int nc = cur[1]+dc[i];
-						if(check(nr, nc) && !visited[nr][nc]) {
-//							if(temp[nr][nc] == -2) {
-//								//비활성 -> 활성
-//								//활성 되자마자 퍼트려야해서 큐의 가장 앞으로 집어넣고 반복 횟수 1회 증가
-//								q.offerFirst(new int[] {nr, nc});
-//								n++;
-//							}else {
-//								q.offer(new int[] {nr, nc});
-//								area--;
-//							}
-//							visited[nr][nc] = true;
-//							temp[nr][nc] = 2;
-							q.offer(new int[] {nr, nc, cur[2]+1});
-							visited[nr][nc] = true;
-							temp[nr][nc] = cur[2]+1;
-							if(board[nr][nc] != 2) area--;
+			int t = 0; //board는 꽉찼지만 큐를 털기 위해 마지막에 한번 더 들어가기에 -1 스타트
+			if(area != 0) {
+				loop:
+				while(!q.isEmpty()) {
+					int n = q.size();
+					while(n-- > 0) { //같은 depth의 애들만 돌리기
+						int[] cur = q.poll();
+						for (int i = 0; i < 4; i++) {
+							int nr = cur[0]+dr[i];
+							int nc = cur[1]+dc[i];
+							if(check(nr, nc) && !visited[nr][nc]) {
+								q.offer(new int[] {nr, nc, cur[2]+1});
+								visited[nr][nc] = true;
+								temp[nr][nc] = cur[2]+1;
+								if(board[nr][nc] != 2) area--;
+								if(area == 0) {
+									t++;
+									break loop;
+								}
+							}
 						}
 					}
+					t++; //바이러스 퍼트림
 				}
-				t++; //바이러스 퍼트림
 			}
 			
 			//바이러스 둔 위치별 최소 시간 찾기
-			System.out.println("area: " + area + ", t: " + t);
 			if(area == 0) { //퍼진 바이러스량과 기존 일반 영역이 같으면 다 퍼트린거임
 				if(time == -1) time = t;
 				else time = Math.min(time, t);
