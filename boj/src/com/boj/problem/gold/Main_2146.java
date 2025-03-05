@@ -8,7 +8,17 @@ public class Main_2146 {
 	static boolean[][] visited;
 	static int[] dr = {-1, 0, 1, 0};
 	static int[] dc = {0, 1, 0, -1};
-	static ArrayList<ArrayList<int[]>> land;
+	static class Node {
+		int r, c, w, l;
+
+		public Node(int r, int c, int w, int l) {
+			this.r = r;
+			this.c = c;
+			this.w = w;
+			this.l = l;
+		}
+	}
+	static Queue<Node> land;
 	static int bridge = Integer.MAX_VALUE;
 
 	public static void main(String[] args) throws Exception{
@@ -26,7 +36,7 @@ public class Main_2146 {
 				if(board[i][j] == 1) board[i][j] = -1;
 			}
 		}
-		land = new ArrayList<>();
+		land = new ArrayDeque<>();
 		
 		/* 로직 */
 		//1.단 FF 돌려서 섬을 나눠
@@ -34,7 +44,6 @@ public class Main_2146 {
 			for (int j = 0; j < N; j++) {
 				if(board[i][j] == -1) {
 					landCount++;
-					land.add(new ArrayList<>());
 					visited = new boolean[N][N];
 					bfs(new int[] {i, j});
 				}
@@ -42,38 +51,31 @@ public class Main_2146 {
 		}
 		//섬 별로 bfs 돌려서 다른 섬 찾으면 다리 연결
 		//연결 시 거리 체크
-		for (int i = 0; i < landCount; i++) {
-			for (int j = 0; j < land.get(i).size(); j++) {
-				visited = new boolean[N][N];
-				createBridge(new int[] {land.get(i).get(j)[0], land.get(i).get(j)[1], 0}, i+1);
-			}
-		}
+		createBridge();
+
 		
 		/* 출력 */
 		System.out.print(bridge);
 	}
 
-	static void createBridge(int[] start, int landNum) {
-		Queue<int[]> q = new ArrayDeque<>();
-		q.offer(start);
-		visited[start[0]][start[1]] = true;
-		while(!q.isEmpty()) {
-			int[] cur = q.poll();
-			if(cur[2] > bridge) continue;
+	static void createBridge() {
+		while(!land.isEmpty()) {
+			Node cur = land.poll();
+			if(cur.w > bridge) continue;
 			for (int i = 0; i < 4; i++) {
-				int nr = cur[0]+dr[i];
-				int nc = cur[1]+dc[i];
+				int nr = cur.r+dr[i];
+				int nc = cur.c+dc[i];
 				if(check(nr, nc) && !visited[nr][nc]) {
-					if(board[nr][nc] == landNum) {
+					if(board[nr][nc] == cur.l) {
 						visited[nr][nc] = true;
 						continue;
 					}
 					if(board[nr][nc] == 0) {
-						q.offer(new int[] {nr, nc, cur[2]+1});
+						land.offer(new Node(nr, nc, cur.w+1, 0));
 						visited[nr][nc] = true;
 					}else {
 						//다른 섬을 만남 -> 다리 최소 길이 체크
-						bridge = Math.min(bridge, cur[2]);
+						bridge = Math.min(bridge, cur.w);
 					}
 				}
 			}
@@ -96,14 +98,16 @@ public class Main_2146 {
 		board[start[0]][start[1]] = landCount;
 		while(!q.isEmpty()) {
 			int[] cur = q.poll();
+			boolean isEdge = false;
 			for (int i = 0; i < 4; i++) {
 				int nr = cur[0]+dr[i];
 				int nc = cur[1]+dc[i];
 				if(check(nr, nc) && !visited[nr][nc]) {
 					if(board[nr][nc] == 0) {
 						//바다 근처 육지만 고름
-						if(!land.get(landCount-1).contains(cur))
-							land.get(landCount-1).add(cur);
+						if(!isEdge)
+							land.offer(new Node(cur[0], cur[1], 0, landCount));
+						isEdge = true;
 						continue;
 					}
 					q.offer(new int[] {nr, nc});
