@@ -1,16 +1,18 @@
+package com.boj.problem.gold;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Queue;
 import java.util.StringTokenizer;
 
 public class Main_1005 {
-	static int T, N, K, W, result;
+	static int T, N, K, W;
 	static int[] time;
+	static int[] dp; //각 건물이 완성되기까지 걸리는 시간 (최소 시간)
 	static ArrayList<Integer>[] graph;
 	static int[] count; //각 노드의 진입 차수;
-	static boolean[] check;
 	static Queue<Integer> queue; //집입차수 0인 노드들을 담아둘 큐
 
 	public static void main(String[] args) throws Exception{
@@ -27,9 +29,11 @@ public class Main_1005 {
 			
 			/* 초기화 */
 			time = new int[N+1];
+			dp = new int[N+1]; // 초기값 자기 자신
 			st = new StringTokenizer(br.readLine());
 			for (int i = 1; i <= N; i++) {
 				time[i] = Integer.parseInt(st.nextToken());
+				dp[i] = time[i];
 			}
 			graph = new ArrayList[N+1];
 			for (int i = 0; i <= N; i++) {
@@ -44,54 +48,43 @@ public class Main_1005 {
 				count[e]++;
 			}
 			W = Integer.parseInt(br.readLine().trim());
-			check = new boolean[N+1];
 			queue = new ArrayDeque<>();
-			result = 0;
 			
 			/* 로직 */
-			
-			findZero();
-			loop:
-			while(!queue.isEmpty()) {
-				int maxT = 0;
-				int size = queue.size();
-//				System.out.println("size: " + size);
-				while(size-- > 0) {
-					int v = queue.poll();
-					if(v == W) {
-						result += time[v];
-						break loop;
-					}
-					maxT = Math.max(maxT, time[v]);
-					int n = graph[v].size();
-					for (int i = 0; i < n; i++) {
-						//집입차수 제거
-						count[graph[v].get(i)]--;
-					}
-//					System.out.println("v: " + v + ", maxT: " + maxT + ", n: " + n);
+			//위상 정렬 사용
+			//1. 진입 차수가 0인 애들을 큐에 추가 (시작시에 한번만 별도로 찾음)
+			for (int i = 1; i <= N; i++) {
+				if(count[i] == 0) {
+					queue.offer(i);
 				}
-				result += maxT;
-//				System.out.println("result: " + result);
-				findZero(); 
 			}
 			
-			sb.append(result).append("\n");
+			//2. 위상 정렬 스타트
+			while(!queue.isEmpty()) {
+				int cur = queue.poll();
+				//현재 노드가 가리키는 다음 노드들의 dp값 갱신
+				//현재노드의 dp값과 다음 노드의 dp값을 합한 값과, 다음 노드의 dp값 비교
+				//그 중 큰 값으로 갱신
+				//이전 건물이 오래 걸린다? -> 다음 건물은 이전 건물 시간으로 갱신
+				//이전 건물이 빨리 끝난다? -> 이전 건물 시간 + 다음 건물 시간으로 갱신
+				for (int next : graph[cur]) {
+					dp[next] = Math.max(dp[next], dp[cur]+time[next]);
+					
+					//진입 차수 감소
+					count[next]--;
+					
+					//집입 차수 0이면 큐에 추가
+					if(count[next] == 0) queue.offer(next);
+				}
+				
+				
+			}
+			
+			sb.append(dp[W]).append("\n");
 		}
 		/* 출력 */
 		System.out.print(sb);		
 	}
 
-	/**
-	 * 진입차수가 0인 노드의 개수를 반환.
-	 * */
-	static void findZero() {
-		for (int i = 1; i <= N; i++) {
-			if(check[i]) continue;
-			if(count[i] == 0) {
-				check[i] = true;
-				queue.offer(i);
-			}
-		}
-	}
 
 }
