@@ -1,5 +1,5 @@
+package com.boj.problem.bronze;
 import java.io.*;
-import java.util.*;
 
 public class Main_2562 {
 	static int max, idx;
