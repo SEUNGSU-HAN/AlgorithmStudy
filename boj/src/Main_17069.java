@@ -1,7 +1,7 @@
 import java.io.*;
 import java.util.*;
 
-public class Main_1707_dp {
+public class Main_17069 {
 	static int N, set=0; //set: 현대 파이프가 놓인 상태(0:우,1:하,2:대)
 	static int[][][] d = {
 			{{0, 1}, {0, 0}, {1, 1}}, //우로 놓였을 때
