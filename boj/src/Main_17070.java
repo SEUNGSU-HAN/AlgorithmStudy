@@ -26,9 +26,30 @@ public class Main_17070 {
 		}
 		
 		/* 로직+출력 */
-		System.out.print(bfs(new int[] {0, 1, 0})); //r, c, 파이프 상태		
+//		System.out.print(bfs(new int[] {0, 1, 0})); //r, c, 파이프 상태	
+		System.out.print(dfs(0, 1, 0)); //r, c, 파이프 상태		
+
+		
+	}
+	
+	static int dfs(int r, int c, int s) {
+		if(r == N-1 && c == N-1) return 1;
+		
+		int count = 0;
+		for (int i = 0; i < 3; i++) {
+			int nr = r+d[s][i][0];
+			int nc = c+d[s][i][1];
+			if(nr == r && nc == c) continue;
+			if(check(nr, nc) && board[nr][nc] != 1) {
+				if(i == 2) //대각선으로 갈 경우 현재 위치에서 우,하,대 체크
+					if(!check2(r, c)) continue;
+				count += dfs(nr, nc, i);
+			}
+		}
+		return count;
 	}
 
+	/*
 	static int bfs(int[] start) {
 		Queue<int[]> q = new ArrayDeque<>();
 		q.offer(start);
@@ -51,6 +72,7 @@ public class Main_17070 {
 		
 		return count;
 	}
+	*/
 
 	static boolean check2(int r, int c) {
 		for (int i = 0; i < d[2].length; i++) {
