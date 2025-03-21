@@ -1,3 +1,4 @@
+package com.boj.problem.bronze;
 import java.io.*;
 import java.util.*;
 
