@@ -28,13 +28,13 @@ public class Main_14620 {
 		visited = new boolean[N][N];
 		
 		/* 로직 */
-		combi(0, 0, 0, 0);
+		combi(0, 0, 0);
 		
 		/* 출력 */
 		System.out.print(minPrice);
 	}
 
-	static void combi(int cnt, int start, long innerFlag, int tot) {
+	static void combi(int cnt, int start, int tot) {
 		if(tot >= minPrice) return;
 		if(cnt == 3) {
 			minPrice = Math.min(tot, minPrice);
@@ -43,8 +43,7 @@ public class Main_14620 {
 		for (int i = start; i < IN*IN; i++) {
 			int r = i/IN+1;
 			int c = i%IN+1;
-			if(check(r, c) || visited[r][c] || ((innerFlag & 1<<i) != 0)) continue;
-			System.out.println("cnt: " + cnt + ", i: " + i);
+			if(check(r, c) || visited[r][c]) continue;
 			flowers[cnt] = i;
 			visited[r][c] = true;
 			for (int j = 0; j < 4; j++) {
@@ -53,7 +52,7 @@ public class Main_14620 {
 				visited[nr][nc] = true;
 				tot += board[nr][nc];
 			}
-			combi(cnt+1, i+1, (innerFlag | 1<<i), tot+board[r][c]);
+			combi(cnt+1, i+1, tot+board[r][c]);
 			visited[r][c] = false;
 			for (int j = 0; j < 4; j++) {
 				int nr = r+dr[j];
