@@ -35,10 +35,10 @@ public class Main_15684 {
 			그래서 사다리 사이의 다리 개수가 홀수인 곳이 3군데보다 많다?
 			-> 절대 불가능 바로 폐기
 		 */
-		if(oddBridge() > 3) {
-			System.out.print(-1);
-			return;
-		}
+//		if(oddBridge() > 3) {
+//			System.out.print(-1);
+//			return;
+//		}
 		
 		
 		//다리는 차피 최대 3개임
