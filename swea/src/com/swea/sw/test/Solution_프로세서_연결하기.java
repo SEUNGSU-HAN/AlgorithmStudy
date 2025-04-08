@@ -1,120 +1,87 @@
 package com.swea.sw.test;
-
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.StringTokenizer;
+import java.io.*;
+import java.util.*;
 
 public class Solution_프로세서_연결하기 {
-	static int T, N;
-	static int[][] board;
+	static int N, T, min, maxConn;
 	static int[] dr = {-1, 0, 1, 0};
 	static int[] dc = {0, 1, 0, -1};
+	static int[][] board;
 	static ArrayList<int[]> core;
-	static boolean[] visited;
-	static int maxCore;
-	static int maxLine;
 
 	public static void main(String[] args) throws Exception{
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		StringTokenizer st = new StringTokenizer(br.readLine());
-		T = Integer.parseInt(st.nextToken());
+		StringBuilder sb = new StringBuilder();
+		T = Integer.parseInt(br.readLine().trim());
 		
-		for (int t = 0; t < T; t++) {
+		for (int test_case = 1; test_case <= T; test_case++) {
 			/* 입력 */
-			st = new StringTokenizer(br.readLine());
-			N = Integer.parseInt(st.nextToken());
+			N = Integer.parseInt(br.readLine().trim());
 			
 			/* 초기화 */
 			board = new int[N+2][N+2];
 			for (int i = 0; i < N+2; i++) {
-				for (int j = 0; j < N+2; j++) {
-					board[i][j] = 4;
-				}
+				Arrays.fill(board[i], -2);
 			}
 			core = new ArrayList<>();
+			maxConn = 0;
 			for (int i = 1; i <= N; i++) {
-				st = new StringTokenizer(br.readLine());
+				StringTokenizer st = new StringTokenizer(br.readLine());
 				for (int j = 1; j <= N; j++) {
 					board[i][j] = Integer.parseInt(st.nextToken());
-					if(board[i][j] == 1) {
-						if((i == 1 || i == N) || (j == 1 || j == N)) {
-							maxCore++;
-							board[i][j] = 3;
-						}
-						else core.add(new int[] {i, j});
+					if(board[i][j] == 1) board[i][j] = -1;
+					if((i > 1 && i < N && j > 1 && j < N) && board[i][j] == -1) {
+						core.add(new int[] {i, j});
 					}
 				}
 			}
-			visited = new boolean[core.size()];
-			maxLine = N*N;
+			min = Integer.MAX_VALUE;
+			
 			/* 로직 */
-			//0: 전선 놓을 수 있는 곳
-			//1: 전선 연결 안된 CPU
-			//2: 전선 및 전류 표시
-			//3: 연결 완료된 CPU
-			dfs(0, maxCore, 0, deepCopyBoard(board));
+			putLine(0, 0, 0);
 			
 			/* 출력 */
-			System.out.println("maxCore: " + maxCore);
-			for (int i = 0; i < N+2; i++) {
-				for (int j = 0; j < N+2; j++) {
-					System.out.print(board[i][j] + " ");
-				}
-				System.out.println();
-			}
-			
-		}
-	}
-
-	private static int[][] deepCopyBoard(int[][] s) {
-		int[][] d = new int[N+2][N+2];
-		for (int i = 0; i < N+2; i++) {
-			for (int j = 0; j < N+2; j++) {
-				d[i][j] = s[i][j];
-			}
+			sb.append("#").append(test_case).append(" ").append(min).append("\n");
 		}
 		
-		return d;
+		System.out.print(sb);
 	}
 
-	private static void dfs(int cnt, int connCore, int connLine, int[][] tempBoard) {
+	static void putLine(int cnt, int count, int connCore) {
 		if(cnt == core.size()) {
-			int maxC = Math.max(maxCore, connCore);
-			int minL = Math.min(maxLine, connLine);
-			if(maxCore < maxC && maxLine > minL) {
-				maxCore = maxC;
-				maxLine = minL;
-				board = deepCopyBoard(tempBoard);
+			if(connCore > maxConn) {
+				min = count;
+				maxConn = connCore;
+			}else if(connCore == maxConn) {
+				min = Math.min(min, count);
 			}
 			return;
 		}
-		int[][] initBoard = deepCopyBoard(tempBoard);
 		int[] cur = core.get(cnt);
-		//1. 해당 코어 주변에 전류가 흐르는지 check
 		for (int i = 0; i < 4; i++) {
-			int nr = cur[0]+dr[i];
-			int nc = cur[1]+dc[i];
-			int count = 0;
-			while(check(nr, nc)) {
-				if(tempBoard[nr][nc] != 0) {
-					tempBoard = deepCopyBoard(initBoard);
-					break;
+			int c = 0;
+			for (int j = 1; j <= N; j++) {
+				int nr = cur[0]+dr[i]*j;
+				int nc = cur[1]+dc[i]*j;
+				if(board[nr][nc] == -1 || board[nr][nc] > 0) break;
+				if(board[nr][nc] == -2) { //전선이 사이드에 닿았음 -> 다음 코어로 넘겨
+					putLine(cnt+1, count+c, connCore+1);
+					break; //다음 방향을 넘어감
 				}
-				tempBoard[nr][nc] = 2;
-				count++;
-				nr += dr[i];
-				nc += dc[i];
-				if(tempBoard[nr][nc] == 4) {
-					dfs(cnt+1, connCore+1, connLine+count, deepCopyBoard(tempBoard));
+				board[nr][nc] = cnt+1;
+				c++;
+			}
+			//복구 로직
+			for (int j = 1; j <= N; j++) {
+				int nr = cur[0]+dr[i]*j;
+				int nc = cur[1]+dc[i]*j;
+				if(board[nr][nc] != cnt+1) break;
+				if(board[nr][nc] == -2) { //전선이 사이드에 닿았음 -> 다음 코어로 넘겨
+					break; //다음 방향을 넘어감
 				}
+				board[nr][nc] = 0;
 			}
 		}
+		putLine(cnt+1, count, connCore);
 	}
-
-	private static boolean check(int nr, int nc) {
-		if((1 <= nr && nr <= N) && (1 <= nc && nc <= N)) return true;
-		return false;
-	}
-
 }
