@@ -1,4 +1,4 @@
-package com.swea.solution.d4;
+package com.swea.problem.d4;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
