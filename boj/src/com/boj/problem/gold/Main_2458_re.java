@@ -1,3 +1,4 @@
+package com.boj.problem.gold;
 import java.io.*;
 import java.util.*;
 
