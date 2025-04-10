@@ -19,7 +19,7 @@ public class Solution_나무_베기 {
 		}
 	}
 	static Car rc;
-	static boolean[][][] visited;
+	static int[][][] visited;
 
 	public static void main(String[] args) throws Exception{
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -41,7 +41,7 @@ public class Solution_나무_베기 {
 					if(board[i][j] == 'X') rc = new Car(i, j, K, 0, 0);
 				}
 			}
-			visited = new boolean[K+1][N][N];
+			visited = new int[K+1][N][N];
 			
 			/* 로직 */
 			sb.append("#").append(test_case).append(" ").append(bfs()).append("\n");
@@ -55,33 +55,33 @@ public class Solution_나무_베기 {
 	static int bfs() {
 		Queue<Car> q = new ArrayDeque<>();
 		q.offer(rc);
-		visited[rc.k][rc.r][rc.c] = true;
+		visited[rc.k][rc.r][rc.c] = 1;
 		int min = 999;
 		while(!q.isEmpty()) {
 			Car cur = q.poll();
-			System.out.println("r: " + cur.r + ", c: " + cur.c + ", k: " + cur.k + ", d: " + cur.d + ", count: " + cur.count);
-			int d = rc.d;
+			int k = cur.k;
+			int d = cur.d;
 			for (int i = 0; i < 4; i++) {
 				int nr = cur.r+dr[i];
 				int nc = cur.c+dc[i];
-				int nk = cur.k;
 				int ncount = cur.count;
 				if(!check(nr, nc)) continue;
 				if(board[nr][nc] == 'Y') {
 					min = Math.min(min, ncount+turn(d, i)+1);
-					continue;
+					break;
 				}
 				if(board[nr][nc] == 'T') {
-					if(nk == 0) continue;
-					else { //나무를 베고 이동할 것
-						ncount += turn(d, i)+2;
-						visited[--nk][nr][nc] = true;
-						q.offer(new Car(nr, nc, nk, i, ncount));
+					if(k > 0) {//나무를 베고 이동할 것 (나무 베는건 카운팅 안댐)
+						ncount += turn(d, i)+1;
+						if(visited[k-1][nr][nc] != 0 && ncount >= visited[k-1][nr][nc]) continue;
+						visited[k-1][nr][nc] = ncount;
+						q.offer(new Car(nr, nc, k-1, i, ncount));
 					}
 				}else {
 					ncount += turn(d, i)+1;
-					visited[nk][nr][nc] = true;
-					q.offer(new Car(nr, nc, nk, i, ncount));
+					if(visited[k][nr][nc] != 0 && ncount >= visited[k][nr][nc]) continue;
+					visited[k][nr][nc] = ncount;
+					q.offer(new Car(nr, nc, k, i, ncount));
 				}
 				//나무 체크
 			}
@@ -104,7 +104,7 @@ public class Solution_나무_베기 {
 				return 2;
 			}
 		}else if(d == 2) { //하 방향
-			if(i == 2 || i == 3) { //우회전, 좌회전
+			if(i == 1 || i == 3) { //우회전, 좌회전
 				return 1;
 			}else if(i == 0) { //우회전(혹은 좌회전) 2번
 				return 2;
