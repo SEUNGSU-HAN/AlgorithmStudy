@@ -9,6 +9,7 @@ public class Solution_오름차순_줄_세우기 {
 	public static void main(String[] args) throws Exception{
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		T = Integer.parseInt(br.readLine().trim());
+		StringBuilder sb = new StringBuilder();
 		
 		for (int test_case = 1; test_case <= T; test_case++) {
 			/* 입력 */
@@ -16,17 +17,21 @@ public class Solution_오름차순_줄_세우기 {
 			
 			/* 초기화 */
 			StringTokenizer st = new StringTokenizer(br.readLine());
-			kids = new int[N];
-			for (int i = 0; i < N; i++) {
-				kids[i] = Integer.parseInt(st.nextToken());
-			}
+			kids = new int[N+1];
 			
 			/* 로직 */
+			int ans = 0;
+			for (int i = 0; i < N; i++) {
+				int n = Integer.parseInt(st.nextToken());
+				kids[n] = kids[n-1]+1;
+				if(ans < kids[n]) ans = kids[n];
+			}
 			
 			/* 출력 */
+			sb.append("#").append(test_case).append(" ").append(N-ans).append("\n");
 		}
 		
-		
+		System.out.print(sb);
 	}
 
 }
