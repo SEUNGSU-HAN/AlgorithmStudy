@@ -22,6 +22,7 @@ public class Solution_벽돌_깨기 {
 			
 			
 			/* 초기화 */
+			wall = 0;
 			result = Integer.MAX_VALUE;
 			board = new int[H][W];
 			for (int i = 0; i < H; i++) {
@@ -31,13 +32,12 @@ public class Solution_벽돌_깨기 {
 					if(board[i][j] != 0) wall++;
 				}
 			}
-			System.out.println(wall);
 			
 			/* 로직 */
 			breakWall(0, wall, deepCopy(board)); //발사 횟수, 남은 벽돌 수, 복사 맵
 			
 			/* 출력 */
-			sb.append("#").append(test_case).append(" ").append(result);
+			sb.append("#").append(test_case).append(" ").append(result).append("\n");
 		}
 		System.out.print(sb);
 	}
@@ -52,7 +52,6 @@ public class Solution_벽돌_깨기 {
 
 	static void breakWall(int cnt, int w, int[][] b) {
 		if(cnt == N) {
-			System.out.println(w);
 			result = Math.min(result, w);
 			return;
 		}
@@ -69,9 +68,7 @@ public class Solution_벽돌_깨기 {
 			}
 			if(hitStone == -1) continue;
 			//2. 연쇄 폭발
-			int broken = bfs(new int[] {hitStone, i}, temp);
-			System.out.println("cnt: " + cnt + ", hitStone: " + hitStone + ", i: " + i + ", w: " + w + ", broken: " + broken);
-			print(temp);
+			int broken = bfs(new int[] {hitStone, i}, temp);			
 			
 			//3. 벽돌 정리
 			reBuildBoard(temp);
@@ -79,23 +76,14 @@ public class Solution_벽돌_깨기 {
 			//4. 다음 공 발사
 			breakWall(cnt+1, w-broken, deepCopy(temp));
 		}
-	}
-
-	static void print(int[][] temp) {
-		for (int i = 0; i < H; i++) {
-			for (int j = 0; j < W; j++) {
-				System.out.printf("% 3d", temp[i][j]);
-			}
-			System.out.println();
-		}
-		System.out.println("==============");
+		breakWall(cnt+1, w, deepCopy(b));
 	}
 
 	static void reBuildBoard(int[][] b) {
 		for (int i = 0; i < W; i++) {
 			int zeroPoint = H-1;
 			int swapPoint = H-1;
-			while(zeroPoint > 0 && swapPoint >= 0) {
+			while(zeroPoint >= 0 && swapPoint >= 0) {
 				//zeroPoint 이동
 				while(zeroPoint > 0 && b[zeroPoint][i] != 0) zeroPoint--;
 				if(zeroPoint <= 0) break;
@@ -103,7 +91,6 @@ public class Solution_벽돌_깨기 {
 				//swapPoint 이동
 				swapPoint = zeroPoint;
 				while(swapPoint > 0 && b[swapPoint][i] == 0) swapPoint--;
-				if(swapPoint <= zeroPoint) break;
 				
 				//swap
 				int temp = b[zeroPoint][i];
@@ -134,7 +121,8 @@ public class Solution_벽돌_깨기 {
 				for (int j = 1; j <= area; j++) {
 					int nr = cur[0]+dr[i]*j;
 					int nc = cur[1]+dc[i]*j;
-					if(check(nr, nc) && !visited[nr][nc] && b[nr][nc] != 0) {
+					if(!check(nr, nc)) break;
+					if(!visited[nr][nc] && b[nr][nc] != 0) {
 						visited[nr][nc] = true;
 						q.offer(new int[] {nr, nc});
 					}
