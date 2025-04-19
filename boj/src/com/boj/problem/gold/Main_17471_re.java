@@ -1,3 +1,4 @@
+package com.boj.problem.gold;
 import java.io.*;
 import java.util.*;
 
@@ -29,7 +30,7 @@ public class Main_17471_re {
 				graph[i].add(e);
 			}
 		}
-		
+		 
 		/* 로직 */
 		//1. 선거구를 분리 (subset 활용 -> N이 10이하라 가능)
 		//비트마스킹으로 방문관리
