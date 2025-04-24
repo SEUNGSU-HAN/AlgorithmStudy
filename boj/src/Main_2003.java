@@ -22,7 +22,15 @@ public class Main_2003 {
 		/* 로직 */
 		
 		int s = 0, e = 0, sum = 0, ans = 0;
-		while(s < )
+		while(e < N) {
+			if(sum < M) e++;
+			else if(sum > M) sum -= nums[s++];
+			else {
+				ans++;
+				s++;
+			}
+			sum += nums[e];
+		}
 		
 		/* 출력 */
 		System.out.println(ans);
