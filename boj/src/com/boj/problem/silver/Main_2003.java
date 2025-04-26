@@ -1,3 +1,4 @@
+package com.boj.problem.silver;
 import java.io.*;
 import java.util.*;
 
@@ -23,13 +24,21 @@ public class Main_2003 {
 		
 		int s = 0, e = 0, sum = 0, ans = 0;
 		while(e < N) {
-			if(sum < M) e++;
-			else if(sum > M) sum -= nums[s++];
-			else {
-				ans++;
-				s++;
+			if(sum < M) {
+				sum += nums[e++];
 			}
-			sum += nums[e];
+			
+			if (sum > M){
+				while(sum > M) {
+					sum -= nums[s++];
+				}	
+			}
+			
+			if(sum == M) {
+				ans++;
+				sum -= nums[s++];
+			}
+			
 		}
 		
 		/* 출력 */
