@@ -1,3 +1,4 @@
+package com.boj.problem.bronze;
 import java.io.*;
 
 public class Main_2558 {
